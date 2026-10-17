@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 
 class MainPageLocators:
     CONSTRUCTOR_BUTTON = (By.XPATH, "//p[text()='Конструктор']")
-    ORDER_FEED_BUTTON = (By.XPATH, "//p[text()='Лента заказов']")
+    ORDER_FEED_BUTTON = (By.XPATH, "//p[text()='Лента Заказов']/ancestor::a")
     INGREDIENT_ITEM = (By.XPATH, "//a[contains(@class, 'BurgerIngredient')]")
     INGREDIENT_COUNTER = (By.XPATH, ".//p[contains(@class, 'counter')]")
     MODAL_CLOSE_BUTTON = (By.XPATH, "//button[contains(@class, 'Modal_modal__close')]")
