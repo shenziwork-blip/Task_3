@@ -3,7 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from pages.main_page import MainPage
 from pages.login_page import LoginPage
 from helpers.user_helper import create_user, delete_user
-
+from locators.locators import MainPageLocators
 
 class TestMainFunctionality:
     def setup_method(self):
@@ -27,4 +27,20 @@ class TestMainFunctionality:
         page.click_order_feed()
         WebDriverWait(driver, 10).until(lambda d: "feed" in d.current_url)
         assert "feed" in driver.current_url
-        
+
+    @allure.title("Клик по ингредиенту открывает модальное окно")
+    def test_ingredient_modal_opens(self, driver):
+        page = MainPage(driver)
+        page.open("https://qa-stellarburgers.education-services.ru/")
+        page.click_first_ingredient()
+        # Проверяем, что модалка появилась (по крестику или заголовку)
+        assert page.is_element_visible(MainPageLocators.MODAL_CLOSE_BUTTON)
+
+    @allure.title("Модальное окно закрывается по крестику")
+    def test_ingredient_modal_closes(self, driver):
+        page = MainPage(driver)
+        page.open("https://qa-stellarburgers.education-services.ru/")
+        page.click_first_ingredient()
+        page.close_modal()
+        # После закрытия крестик должен исчезнуть
+        assert not page.is_element_visible(MainPageLocators.MODAL_CLOSE_BUTTON)

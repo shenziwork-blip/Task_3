@@ -16,7 +16,11 @@ class MainPage(BasePage):
             self.driver.execute_script("arguments[0].click();", ingredients[0])
 
     def close_modal(self):
-        self.click(MainPageLocators.MODAL_CLOSE_BUTTON)
+        close_btn = self.find_element(MainPageLocators.MODAL_CLOSE_BUTTON)
+        self.driver.execute_script("arguments[0].click();", close_btn)
+        # Ждём, пока модалка исчезнет
+        from selenium.webdriver.support import expected_conditions as EC
+        self.wait.until(EC.invisibility_of_element_located(MainPageLocators.MODAL_CLOSE_BUTTON))
 
     def get_ingredient_counter(self):
         counter = self.find_element(MainPageLocators.INGREDIENT_COUNTER)
@@ -24,4 +28,3 @@ class MainPage(BasePage):
 
     def click_order_button(self):
         self.click(MainPageLocators.ORDER_BUTTON)
-        
