@@ -9,10 +9,12 @@ class AccountPage(BasePage):
         self.driver.execute_script("arguments[0].click();", account_link)
 
     def go_to_order_history(self):
-        self.click(AccountPageLocators.ORDER_HISTORY_LINK)
+        link = self.find_element(AccountPageLocators.ORDER_HISTORY_LINK)
+        self.driver.execute_script("arguments[0].click();", link)
 
     def logout(self):
-        self.click(AccountPageLocators.LOGOUT_BUTTON)
+        button = self.find_element(AccountPageLocators.LOGOUT_BUTTON)
+        self.driver.execute_script("arguments[0].click();", button)
 
     def is_on_account_page(self):
         return "account" in self.driver.current_url or "profile" in self.driver.current_url

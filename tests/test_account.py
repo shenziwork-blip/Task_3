@@ -1,8 +1,9 @@
 import allure
+from selenium.webdriver.support.ui import WebDriverWait
 from pages.account_page import AccountPage
 from pages.login_page import LoginPage
 from helpers.user_helper import create_user, delete_user
-from selenium.webdriver.support.ui import WebDriverWait
+
 
 class TestAccount:
     def setup_method(self):
@@ -18,13 +19,11 @@ class TestAccount:
         login_page.open("https://qa-stellarburgers.education-services.ru/login")
         login_page.login(self.email, self.password)
 
-        # Ждём, что ушли со страницы логина
         WebDriverWait(driver, 15).until(lambda d: "login" not in d.current_url)
 
         account_page = AccountPage(driver)
         account_page.click_personal_account()
 
-        # Проверяем, что попали в кабинет
         WebDriverWait(driver, 10).until(lambda d: "account" in d.current_url or "profile" in d.current_url)
         assert "account" in driver.current_url or "profile" in driver.current_url
 
@@ -34,11 +33,14 @@ class TestAccount:
         login_page.open("https://qa-stellarburgers.education-services.ru/login")
         login_page.login(self.email, self.password)
 
+        WebDriverWait(driver, 15).until(lambda d: "login" not in d.current_url)
+
         account_page = AccountPage(driver)
         account_page.click_personal_account()
         account_page.go_to_order_history()
 
-        assert "orders" in driver.current_url or "profile/orders" in driver.current_url
+        WebDriverWait(driver, 10).until(lambda d: "order-history" in d.current_url)
+        assert "order-history" in driver.current_url
 
     @allure.title("Выход из аккаунта")
     def test_logout(self, driver):
@@ -46,9 +48,11 @@ class TestAccount:
         login_page.open("https://qa-stellarburgers.education-services.ru/login")
         login_page.login(self.email, self.password)
 
+        WebDriverWait(driver, 25).until(lambda d: "login" not in d.current_url)
+
         account_page = AccountPage(driver)
         account_page.click_personal_account()
         account_page.logout()
 
-        # После выхода обычно редирект на логин или главную
-        assert "login" in driver.current_url or "stellarburgers" in driver.current_url
+        WebDriverWait(driver, 10).until(lambda d: "login" in d.current_url)
+        assert "login" in driver.current_url
