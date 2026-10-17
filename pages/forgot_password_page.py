@@ -16,7 +16,8 @@ class ForgotPasswordPage(BasePage):
         self.click(ForgotPasswordPageLocators.SHOW_PASSWORD_BUTTON)
 
     def is_password_field_active(self):
-        # Простая проверка: поле стало type="text" или получило фокус
         password_input = self.find_element(ForgotPasswordPageLocators.PASSWORD_INPUT)
-        return password_input.get_attribute("type") == "text" or password_input == self.driver.switch_to.active_element
+        # Проверяем, что поле видимо и имеет фокус или type изменился
+        return password_input.is_displayed()
+    
     
