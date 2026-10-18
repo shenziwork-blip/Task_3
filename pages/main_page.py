@@ -44,6 +44,8 @@ class MainPage(BasePage):
         self.click(MainPageLocators.ORDER_BUTTON)
 
     def add_ingredient_to_order(self, index=0):
+        if not getattr(self, "current_tab", None):
+            self.current_tab = "Булки"
         ingredients = self.get_ingredients_in_current_tab()
         ingredient = ingredients[index]
         drop_zone = self.find_element((By.CSS_SELECTOR, "section.BurgerConstructor_basket__29Cd7"))
@@ -77,6 +79,10 @@ class MainPage(BasePage):
         else:
             ActionChains(self.driver).drag_and_drop(ingredient, drop_zone).perform()
 
+    def get_order_number_from_modal(self):
+        number_element = self.find_element(MainPageLocators.ORDER_NUMBER_IN_MODAL)
+        return number_element.text.strip()
+    
     def switch_to_tab(self, tab_name):
         tab = self.find_element((By.XPATH, f"//span[text()='{tab_name}']/parent::div"))
         # Обычный клик + JS-клик для надёжности в Firefox

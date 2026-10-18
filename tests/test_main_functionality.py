@@ -1,4 +1,5 @@
 import allure
+import pytest
 from selenium.webdriver.support.ui import WebDriverWait
 from pages.main_page import MainPage
 from pages.login_page import LoginPage
@@ -44,3 +45,38 @@ class TestMainFunctionality:
         page.close_modal()
         # После закрытия крестик должен исчезнуть
         assert not page.is_element_visible(MainPageLocators.MODAL_CLOSE_BUTTON)
+
+    @allure.title("При добавлении ингредиента увеличивается каунтер")
+    @pytest.mark.parametrize("tab, index, expected_increase", [
+        ("Булки", 0, 2),
+        ("Соусы", 0, 1),
+        ("Начинки", 0, 1),
+    ])
+    def test_ingredient_counter_increases(self, driver, tab, index, expected_increase):
+        page = MainPage(driver)
+        page.open("https://qa-stellarburgers.education-services.ru/")
+        page.switch_to_tab(tab)
+
+        
+        counter_before = page.get_ingredient_counter(index)
+        page.add_ingredient_to_order(index)
+        counter_after = page.get_ingredient_counter(index)
+
+        assert counter_after == counter_before + expected_increase
+
+    @allure.title("Залогиненный пользователь может оформить заказ")
+    def test_logged_user_can_create_order(self, driver):
+        # Логинимся
+        login_page = LoginPage(driver)
+        login_page.open("https://qa-stellarburgers.education-services.ru/login")
+        login_page.login(self.email, self.password)
+        WebDriverWait(driver, 15).until(lambda d: "login" not in d.current_url)
+
+        # Переходим на главную и оформляем заказ
+        page = MainPage(driver)
+        page.open("https://qa-stellarburgers.education-services.ru/")
+        page.add_ingredient_to_order(0)
+        page.click_order_button()
+
+        # Проверяем, что заказ создан (появилось модальное окно с номером заказа)
+        assert page.is_element_visible(MainPageLocators.ORDER_MODAL)
