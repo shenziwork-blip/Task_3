@@ -5,10 +5,13 @@ class MainPageLocators:
     CONSTRUCTOR_BUTTON = (By.XPATH, "//p[text()='Конструктор']")
     ORDER_FEED_BUTTON = (By.XPATH, "//p[text()='Лента Заказов']/ancestor::a")
     INGREDIENT_ITEM = (By.XPATH, "//a[contains(@class, 'BurgerIngredient')]")
-    INGREDIENT_COUNTER = (By.XPATH, ".//p[contains(@class, 'counter')]")
-    MODAL_CLOSE_BUTTON = (By.XPATH, "//button[contains(@class, 'Modal_modal__close') or .//svg[contains(@class, '')]]")
+    INGREDIENT_COUNTER = (By.XPATH, ".//p[contains(@class, 'counter_counter__num')]")
+    MODAL_CLOSE_BUTTON = (By.CSS_SELECTOR, "button.Modal_modal__close__TnseK")
     MODAL_OVERLAY = (By.XPATH, "//div[contains(@class, 'Modal_modal_overlay')]")
     ORDER_BUTTON = (By.XPATH, "//button[text()='Оформить заказ']")
+    ORDER_MODAL = (By.XPATH, "//div[contains(@class, 'Modal_modal__container')]")
+    CONSTRUCTOR_AREA = (By.XPATH, "//span[contains(text(), 'Перетяните булочку сюда')]")
+    ORDER_NUMBER_IN_MODAL = (By.CSS_SELECTOR, "h2.Modal_modal__title_shadow__3ikwq")
 
 
 class LoginPageLocators:
@@ -32,7 +35,8 @@ class AccountPageLocators:
 
 
 class OrderFeedPageLocators:
-    ORDER_ITEM = (By.XPATH, "//a[contains(@class, 'OrderHistory_link')]")
-    TOTAL_DONE_COUNTER = (By.XPATH, "//p[text()='Выполнено за всё время']/following-sibling::p")
-    TODAY_DONE_COUNTER = (By.XPATH, "//p[text()='Выполнено за сегодня']/following-sibling::p")
-    IN_PROGRESS_SECTION = (By.XPATH, "//ul[contains(@class, 'OrderFeed_orderListReady')]")
+    ORDER_ITEM = (By.CSS_SELECTOR, "a[href*='/feed/']")
+    TOTAL_DONE_COUNTER = (By.XPATH, "//p[contains(text(), 'Выполнено за все время')]/following-sibling::p")
+    TODAY_DONE_COUNTER = (By.XPATH, "//p[contains(text(), 'Выполнено за сегодня')]/following-sibling::p")
+    IN_PROGRESS_LIST = (By.XPATH, "//ul[contains(@class, 'OrderFeed_orderListReady')]")
+    IN_PROGRESS_SECTION = (By.XPATH, "//p[text()='В работе']/following-sibling::ul")
