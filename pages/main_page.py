@@ -13,10 +13,12 @@ class MainPage(BasePage):
         self.current_tab = "Булки"
     
     def click_constructor(self):
-        self.click(MainPageLocators.CONSTRUCTOR_BUTTON)
+        element = self.find_element(MainPageLocators.CONSTRUCTOR_BUTTON)
+        self.driver.execute_script("arguments[0].click();", element)
 
     def click_order_feed(self):
-        self.click(MainPageLocators.ORDER_FEED_BUTTON)
+        element = self.find_element(MainPageLocators.ORDER_FEED_BUTTON)
+        self.driver.execute_script("arguments[0].click();", element)
 
     def click_first_ingredient(self):
         ingredients = self.find_elements(MainPageLocators.INGREDIENT_ITEM)

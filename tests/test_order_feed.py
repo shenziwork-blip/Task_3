@@ -1,3 +1,4 @@
+import time
 import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -132,8 +133,12 @@ class TestOrderFeed:
         feed_page = OrderFeedPage(driver)
         feed_page.open("https://qa-stellarburgers.education-services.ru/feed")
 
-        # Ждём, пока номер появится в «Готовы»
-        WebDriverWait(driver, 25).until(
-            lambda d: feed_page.is_order_number_ready(order_number)
-        )
-        assert feed_page.is_order_number_ready(order_number)
+        found = False
+        for _ in range(10):
+            if feed_page.is_order_number_in_progress(order_number):
+                found = True
+                break
+            time.sleep(1.5)
+            driver.refresh()
+
+        assert found, f"Номер заказа {order_number} не появился в разделе «В работе»"

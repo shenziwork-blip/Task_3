@@ -75,6 +75,7 @@ class TestMainFunctionality:
         # Переходим на главную и оформляем заказ
         page = MainPage(driver)
         page.open("https://qa-stellarburgers.education-services.ru/")
+        page.switch_to_tab("Булки")
         page.add_ingredient_to_order(0)
         page.click_order_button()
 

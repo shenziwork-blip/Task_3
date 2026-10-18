@@ -4,16 +4,19 @@ from locators.locators import ForgotPasswordPageLocators, LoginPageLocators
 
 class ForgotPasswordPage(BasePage):
     def open_forgot_password_from_login(self):
-        self.click(LoginPageLocators.FORGOT_PASSWORD_LINK)
+        link = self.find_element(LoginPageLocators.FORGOT_PASSWORD_LINK)
+        self.driver.execute_script("arguments[0].click();", link)
 
     def enter_email(self, email):
         self.input_text(ForgotPasswordPageLocators.EMAIL_INPUT, email)
 
     def click_restore_button(self):
-        self.click(ForgotPasswordPageLocators.RESTORE_BUTTON)
+        button = self.find_element(ForgotPasswordPageLocators.RESTORE_BUTTON)
+        self.driver.execute_script("arguments[0].click();", button)
 
     def click_show_password(self):
-        self.click(ForgotPasswordPageLocators.SHOW_PASSWORD_BUTTON)
+        btn = self.find_element(ForgotPasswordPageLocators.SHOW_PASSWORD_BUTTON)
+        self.driver.execute_script("arguments[0].click();", btn)
 
     def is_password_field_active(self):
         password_input = self.find_element(ForgotPasswordPageLocators.PASSWORD_INPUT)

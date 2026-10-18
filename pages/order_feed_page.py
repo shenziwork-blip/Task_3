@@ -39,4 +39,15 @@ class OrderFeedPage(BasePage):
             return clean_number in text or padded in text
         except Exception:
             return False
+
+    def is_order_number_in_progress(self, order_number):
+        try:
+            from selenium.webdriver.common.by import By
+            clean_number = order_number.replace("#", "").strip()
+            padded = clean_number.zfill(5)
+            in_progress = self.find_element((By.XPATH, "//p[contains(text(), 'В работе')]/following-sibling::ul"))
+            text = in_progress.text.replace(" ", "").replace("\n", "")
+            return clean_number in text or padded in text
+        except Exception:
+            return False
         
