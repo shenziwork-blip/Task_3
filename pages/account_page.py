@@ -5,16 +5,14 @@ from locators.locators import AccountPageLocators
 
 class AccountPage(BasePage):
     def click_personal_account(self):
-        account_link = self.find_element((By.XPATH, "//p[text()='Личный Кабинет']/ancestor::a"))
-        self.driver.execute_script("arguments[0].click();", account_link)
+        self.js_click((By.XPATH, "//p[text()='Личный Кабинет']/ancestor::a"))
 
     def go_to_order_history(self):
-        link = self.find_element(AccountPageLocators.ORDER_HISTORY_LINK)
-        self.driver.execute_script("arguments[0].click();", link)
+        self.js_click(AccountPageLocators.ORDER_HISTORY_LINK)
 
     def logout(self):
-        button = self.find_element(AccountPageLocators.LOGOUT_BUTTON)
-        self.driver.execute_script("arguments[0].click();", button)
+        self.js_click(AccountPageLocators.LOGOUT_BUTTON)
 
     def is_on_account_page(self):
-        return "account" in self.driver.current_url or "profile" in self.driver.current_url
+        url = self.get_current_url()
+        return "account" in url or "profile" in url

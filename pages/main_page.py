@@ -13,12 +13,10 @@ class MainPage(BasePage):
         self.current_tab = "Булки"
     
     def click_constructor(self):
-        element = self.find_element(MainPageLocators.CONSTRUCTOR_BUTTON)
-        self.driver.execute_script("arguments[0].click();", element)
+        self.js_click(MainPageLocators.CONSTRUCTOR_BUTTON)
 
     def click_order_feed(self):
-        element = self.find_element(MainPageLocators.ORDER_FEED_BUTTON)
-        self.driver.execute_script("arguments[0].click();", element)
+        self.js_click(MainPageLocators.ORDER_FEED_BUTTON)
 
     def click_first_ingredient(self):
         ingredients = self.find_elements(MainPageLocators.INGREDIENT_ITEM)
@@ -26,8 +24,7 @@ class MainPage(BasePage):
             self.driver.execute_script("arguments[0].click();", ingredients[0])
 
     def close_modal(self):
-        close_btn = self.find_element(MainPageLocators.MODAL_CLOSE_BUTTON)
-        self.driver.execute_script("arguments[0].click();", close_btn)
+        self.js_click(MainPageLocators.MODAL_CLOSE_BUTTON)
         self.wait.until(EC.invisibility_of_element_located(MainPageLocators.MODAL_CLOSE_BUTTON))
 
     def get_ingredient_counter(self, index=0):
@@ -36,7 +33,6 @@ class MainPage(BasePage):
         return int(counter.text)
 
     def get_ingredients_in_current_tab(self):
-        # Берём ингредиенты по тексту вкладки, на которую только что переключились
         return self.driver.find_elements(
             By.XPATH,
             f"//h2[text()='{self.current_tab}']/following-sibling::ul[1]//a[contains(@class, 'BurgerIngredient_ingredient')]"
@@ -59,7 +55,7 @@ class MainPage(BasePage):
         import time
         time.sleep(0.7)
 
-        if self.driver.name == "firefox":
+        if self.get_browser_name() == "firefox":
             self.driver.execute_script("""
                 function createEvent(type) {
                     var event = document.createEvent('HTMLEvents');
@@ -87,7 +83,6 @@ class MainPage(BasePage):
     
     def switch_to_tab(self, tab_name):
         tab = self.find_element((By.XPATH, f"//span[text()='{tab_name}']/parent::div"))
-        # Обычный клик + JS-клик для надёжности в Firefox
         try:
             tab.click()
         except Exception:

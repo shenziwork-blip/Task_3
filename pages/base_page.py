@@ -34,4 +34,17 @@ class BasePage:
             return True
         except:
             return False
+
+    def js_click(self, locator):
+        element = self.find_element(locator)
+        self.driver.execute_script("arguments[0].click();", element)
+
+    def get_current_url(self):
+        return self.driver.current_url
+
+    def scroll_to_element(self, element):
+        self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", element)
+
+    def get_browser_name(self):
+        return self.driver.name
         

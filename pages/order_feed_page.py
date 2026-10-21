@@ -9,7 +9,8 @@ class OrderFeedPage(BasePage):
         orders = self.find_elements(OrderFeedPageLocators.ORDER_ITEM)
         if orders:
             first = orders[0]
-            self.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", first)
+            self.scroll_to_element(first)
+            import time
             time.sleep(0.7)
             ActionChains(self.driver).move_to_element(first).click().perform()
 

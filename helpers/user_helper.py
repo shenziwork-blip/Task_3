@@ -1,7 +1,7 @@
+from constants import BASE_URL
 import requests
 from uuid import uuid4
 
-BASE_URL = "https://qa-stellarburgers.education-services.ru"
 
 
 def create_user():
