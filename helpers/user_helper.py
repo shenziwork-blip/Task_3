@@ -1,7 +1,6 @@
-from constants import BASE_URL
 import requests
 from uuid import uuid4
-
+from constants import BASE_URL
 
 
 def create_user():
@@ -15,12 +14,17 @@ def create_user():
         "name": name
     }
     response = requests.post(f"{BASE_URL}/api/auth/register", json=payload)
+    response.raise_for_status()
     data = response.json()
-    return email, password, data.get("accessToken")
+    token = data.get("accessToken")
+    if not token:
+        raise ValueError("User registration response did not include accessToken")
+    return email, password, token
 
 
 def delete_user(token):
     if token:
         headers = {"Authorization": token}
-        requests.delete(f"{BASE_URL}/api/auth/user", headers=headers)
+        response = requests.delete(f"{BASE_URL}/api/auth/user", headers=headers)
+        response.raise_for_status()
         

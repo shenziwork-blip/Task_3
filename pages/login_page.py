@@ -7,3 +7,4 @@ class LoginPage(BasePage):
         self.input_text(LoginPageLocators.EMAIL_INPUT, email)
         self.input_text(LoginPageLocators.PASSWORD_INPUT, password)
         self.js_click(LoginPageLocators.LOGIN_BUTTON)
+        self.wait.until(lambda d: "login" not in d.current_url)

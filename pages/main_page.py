@@ -1,17 +1,13 @@
-from selenium.webdriver.common.by import By
 from pages.base_page import BasePage
 from locators.locators import MainPageLocators
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 
 class MainPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver)
-        self.wait = WebDriverWait(driver, 10)
         self.current_tab = "Булки"
-    
+
     def click_constructor(self):
         self.js_click(MainPageLocators.CONSTRUCTOR_BUTTON)
 
@@ -21,7 +17,7 @@ class MainPage(BasePage):
     def click_first_ingredient(self):
         ingredients = self.find_elements(MainPageLocators.INGREDIENT_ITEM)
         if ingredients:
-            self.driver.execute_script("arguments[0].click();", ingredients[0])
+            self.execute_script("arguments[0].click();", ingredients[0])
 
     def close_modal(self):
         self.js_click(MainPageLocators.MODAL_CLOSE_BUTTON)
@@ -29,34 +25,35 @@ class MainPage(BasePage):
 
     def get_ingredient_counter(self, index=0):
         ingredients = self.get_ingredients_in_current_tab()
-        counter = ingredients[index].find_element(By.CSS_SELECTOR, "p.counter_counter__num__3nue1")
+        counter = self.find_child(ingredients[index], MainPageLocators.INGREDIENT_COUNTER)
         return int(counter.text)
 
     def get_ingredients_in_current_tab(self):
-        return self.driver.find_elements(
-            By.XPATH,
-            f"//h2[text()='{self.current_tab}']/following-sibling::ul[1]//a[contains(@class, 'BurgerIngredient_ingredient')]"
+        locator = (
+            MainPageLocators.TAB_INGREDIENTS[0],
+            MainPageLocators.TAB_INGREDIENTS[1].format(self.current_tab)
         )
+        return self.find_elements(locator)
 
     def click_order_button(self):
-        self.click(MainPageLocators.ORDER_BUTTON)
+        self.wait.until(EC.presence_of_element_located(MainPageLocators.ORDER_BUTTON))
+        self.js_click(MainPageLocators.ORDER_BUTTON)
 
     def add_ingredient_to_order(self, index=0):
         if not getattr(self, "current_tab", None):
             self.current_tab = "Булки"
         ingredients = self.get_ingredients_in_current_tab()
         ingredient = ingredients[index]
-        drop_zone = self.find_element((By.CSS_SELECTOR, "section.BurgerConstructor_basket__29Cd7"))
+        drop_zone = self.find_element(MainPageLocators.DROP_ZONE)
 
-        self.driver.execute_script("""
+        self.execute_script("""
             arguments[0].scrollIntoView({behavior: 'instant', block: 'center', inline: 'center'});
         """, ingredient)
 
-        import time
-        time.sleep(0.7)
+        self.wait.until(lambda d: ingredient.is_displayed() and drop_zone.is_displayed())
 
         if self.get_browser_name() == "firefox":
-            self.driver.execute_script("""
+            self.execute_script("""
                 function createEvent(type) {
                     var event = document.createEvent('HTMLEvents');
                     event.initEvent(type, true, true);
@@ -75,20 +72,43 @@ class MainPage(BasePage):
                 arguments[0].dispatchEvent(dragEnd);
             """, ingredient, drop_zone)
         else:
-            ActionChains(self.driver).drag_and_drop(ingredient, drop_zone).perform()
+            self.drag_and_drop(ingredient, drop_zone)
 
     def get_order_number_from_modal(self):
-        number_element = self.find_element(MainPageLocators.ORDER_NUMBER_IN_MODAL)
-        return number_element.text.strip()
-    
+        locator = MainPageLocators.ORDER_NUMBER_IN_MODAL
+        self.wait_until(
+            lambda _driver: (
+                (text := self.get_text(locator).strip())
+                and text != "9999"
+                and text.isdigit()
+            ),
+            timeout=20,
+        )
+        return self.find_element(locator).text.strip()
+
     def switch_to_tab(self, tab_name):
-        tab = self.find_element((By.XPATH, f"//span[text()='{tab_name}']/parent::div"))
+        tab_locator = (
+            MainPageLocators.TAB_BY_NAME[0],
+            MainPageLocators.TAB_BY_NAME[1].format(tab_name)
+        )
+        tab = self.find_element(tab_locator)
         try:
             tab.click()
         except Exception:
-            self.driver.execute_script("arguments[0].click();", tab)
-        
+            self.execute_script("arguments[0].click();", tab)
+
         self.current_tab = tab_name
-        self.wait.until(EC.presence_of_element_located(
-            (By.XPATH, f"//h2[text()='{tab_name}']/following-sibling::ul[1]//a")
-        ))
+        ingredients_locator = (
+            MainPageLocators.TAB_INGREDIENTS[0],
+            MainPageLocators.TAB_INGREDIENTS[1].format(tab_name)
+        )
+        self.wait.until(EC.presence_of_element_located(ingredients_locator))
+
+    def is_modal_open(self):
+        return self.is_element_visible(MainPageLocators.MODAL_CLOSE_BUTTON)
+
+    def is_order_modal_visible(self):
+        return self.is_element_visible(MainPageLocators.ORDER_MODAL)  
+
+    def close_order_modal(self):
+        self.close_modal()  

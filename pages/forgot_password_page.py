@@ -15,6 +15,12 @@ class ForgotPasswordPage(BasePage):
     def click_show_password(self):
         self.js_click(ForgotPasswordPageLocators.SHOW_PASSWORD_BUTTON)
 
+    def is_password_input_visible(self):
+        return self.is_element_visible(ForgotPasswordPageLocators.PASSWORD_INPUT)
+
+    def wait_for_password_input(self):
+        self.find_element(ForgotPasswordPageLocators.PASSWORD_INPUT)
+
     def is_password_field_active(self):
         password_input = self.find_element(ForgotPasswordPageLocators.PASSWORD_INPUT)
         return password_input.is_displayed()
